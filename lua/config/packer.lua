@@ -11,6 +11,19 @@ end
 
 local packer_bootstrap = ensure_packer()
 
+-- auto sync packer
+vim.cmd([[
+  	augroup packer_user_config
+	autocmd!
+	autocmd BufWritePost plugins.lua source <afile> | PackerSync
+  	augroup end
+	]])
+
+local status, packer = pcall(require, "packer")
+if not status then
+    return
+end
+
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
   -- My plugins here
@@ -56,18 +69,9 @@ return require('packer').startup(function(use)
     }
   }
 
-  -- Should auto compile changes
-vim.cmd([[
-  	augroup packer_user_config
-	autocmd!
-	autocmd BufWritePost plugins.lua source <afile> | PackerCompile
-  	augroup end
-	]])
-
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if packer_bootstrap then
     require('packer').sync()
   end
 end)
-
